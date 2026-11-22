@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barbería Bruma | Corte clásico, estilo actual</title>
+  <style>
+    :root {
+      --bg: #141210;
+      --bg-soft: #1d1916;
+      --bg-card: #221d19;
+      --text: #f4efe8;
+      --muted: #c7beb2;
+      --line: rgba(244,239,232,0.12);
+      --accent: #c89b63;
+      --accent-dark: #9f7746;
+      --shadow: 0 20px 60px rgba(0,0,0,0.28);
+      --radius: 18px;
+      --max: 1180px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
+    .eyebrow {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.9rem;
+    }
+    h1, h2, h3 { line-height: 1.08; font-weight: 600; }
+    h1 { font-size: clamp(2.8rem, 7vw, 5.8rem); max-width: 11ch; }
+    h2 { font-size: clamp(2rem, 4vw, 3.4rem); margin-bottom: 1rem; }
+    p { color: var(--muted); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.95rem 1.4rem;
+      border-radius: 999px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--accent); color: #1a140f; }
+    .btn-primary:hover { background: #d6ab75; }
+    .btn-outline { border-color: var(--line); color: var(--text); background: transparent; }
+    .btn-outline:hover { border-color: rgba(244,239,232,0.35); background: rgba(255,255,255,0.03); }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(20,18,16,0.78);
+      border-bottom: 1px solid rgba(244,239,232,0.06);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.35rem;
+      letter-spacing: 0.04em;
+    }
+    .brand-mark {
+      width: 42px; height: 42px;
+      border: 1px solid rgba(200,155,99,0.5);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--accent);
+      font-size: 1rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.4rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { padding: 0.75rem 1.15rem; font-size: 0.85rem; }
+
+    /* Hero */
+    .hero {
+      padding: 5.5rem 0 4rem;
+      position: relative;
+      overflow: clip;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(200,155,99,0.18), transparent 35%),
+        radial-gradient(ellipse at 20% 80%, rgba(200,155,99,0.08), transparent 30%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+    }
+    .hero p.lead {
+      font-size: 1.1rem;
+      max-width: 38rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .hero-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 2.2rem; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 1rem;
+      max-width: 36rem;
+    }
+    .stat {
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+    .stat span {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .hero-visual {
+      position: relative;
+      min-height: 520px;
+    }
+    .visual-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(20,18,16,0.05), rgba(20,18,16,0.55)),
+        linear-gradient(135deg, #3a3128, #211b16 55%, #4b3a2a);
+      border: 1px solid rgba(244,239,232,0.08);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .visual-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(244,239,232,0.025) 40px),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(244,239,232,0.025) 40px);
+    }
+    .visual-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem;
+      z-index: 1;
+    }
+    .visual-badge {
+      align-self: flex-start;
+      padding: 0.55rem 0.9rem;
+      border: 1px solid rgba(200,155,99,0.35);
+      background: rgba(20,18,16,0.35);
+      border-radius: 999px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ead7be;
+    }
+    .monogram {
+      font-size: clamp(7rem, 14vw, 11rem);
+      line-height: 0.85;
+      color: rgba(244,239,232,0.9);
+      letter-spacing: -0.04em;
+    }
+    .monogram span { color: var(--accent); }
+    .visual-note {
+      max-width: 18rem;
+      padding: 1.1rem 1.2rem;
+      background: rgba(20,18,16,0.55);
+      border: 1px solid rgba(244,239,232,0.08);
+      border-radius: 14px;
+      backdrop-filter: blur(4px);
+    }
+    .visual-note strong {
+      display: block;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .visual-note p { font-size: 0.95rem; color: #e5ddd1; }
+
+    /* Sections */
+    section { padding: 5.5rem 0; }
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.5rem;
+      align-items: end;
+      margin-bottom: 2.5rem;
+    }
+    .section-head p { max-width: 38rem; }
+    .dark { background: var(--bg-soft); border-top: 1px solid rgba(244,239,232,0.04); border-bottom: 1px solid rgba(244,239,232,0.04); }
+
+    /* Services */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 1.25rem;
+    }
+    .service-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .service-card:hover { transform: translateY(-4px); border-color: rgba(200,155,99,0.35); }
+    .service-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      margin-bottom: 1.2rem;
+      color: var(--accent);
+      background: rgba(200,155,99,0.1);
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+    }
+    .service-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .service-card p { font-size: 0.96rem; margin-bottom: 1.2rem; min-height: 4.8em; }
+    .price {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .price span { color: var(--accent); font-size: 1rem; font-weight: 700; letter-spacing: 0; text-transform: none; margin-left: 0.25rem; }
+
+    /* About */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .about-image {
+      min-height: 420px;
+      border-radius: 28px;
+      background:
+        linear-gradient(160deg, rgba(200,155,99,0.2), transparent 40%),
+        linear-gradient(135deg, #2d2520, #191512);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .about-image svg {
+      position: absolute;
+      inset: auto -5% -10% auto;
+      width: 85%;
+      height: auto;
+      opacity: 0.9;
+    }
+    .about-copy p { margin-bottom: 1rem; max-width: 40rem; }
+    .checks { list-style: none; margin-top: 1.5rem; display: grid; gap: 0.7rem; }
+    .checks li {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.92rem;
+      color: #e4dbcf;
+      padding-left: 1.6rem;
+      position: relative;
+    }
+    .checks li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0.55em;
+      width: 0.75rem; height: 2px;
+      background: var(--accent);
+    }
+
+    /* Reviews */
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 1.25rem;
+    }
+    .review {
+      padding: 1.7rem;
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+    }
+    .stars { color: var(--accent); letter-spacing: 0.15em; font-family: Arial, Helvetica, sans-serif; font-size: 0.85rem; margin-bottom: 1rem; }
+    .review p { color: #ddd3c6; font-size: 1rem; margin-bottom: 1.2rem; }
+    .review .who { font-family: Arial, Helvetica, sans-serif; font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* Contact */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1.5rem;
+    }
+    .contact-panel, .form-panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding: 2rem;
+    }
+    .contact-list { list-style: none; margin-top: 1.5rem; display: grid; gap: 1.2rem; }
+    .contact-list li { padding-bottom: 1.2rem; border-bottom: 1px solid rgba(244,239,232,0.07); }
+    .contact-list li:last-child { padding-bottom: 0; border-bottom: 0; }
+    .label {
+      display: block;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .value { color: #ebe2d6; font-size: 1.02rem; }
+    .hours { display: grid; gap: 0.35rem; font-family: Arial, Helvetica, sans-serif; font-size: 0.92rem; color: #ddd3c6; }
+    .hours div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed rgba(244,239,232,0.08); padding-bottom: 0.35rem; }
+    form { display: grid; gap: 1rem; margin-top: 1.5rem; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    label { display: grid; gap: 0.45rem; font-family: Arial, Helvetica, sans-serif; font-size: 0.8rem; color: #ddd3c6; }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(244,239,232,0.12);
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      font: inherit;
+    }
+    input:focus, select:focus, textarea:focus { outline: 2px solid rgba(200,155,99,0.35); border-color: rgba(200,155,99,0.45); }
+    textarea { resize: vertical; min-height: 110px; }
+    .form-note { font-size: 0.82rem; margin-top: -0.2rem; }
+
+    /* Footer */
+    footer {
+      padding: 2rem 0 2.5rem;
+      border-top: 1px solid rgba(244,239,232,0.06);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+    .footer-inner { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+    .footer-inner a { color: var(--accent); }
+
+    @media (max-width: 980px) {
+      .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 420px; }
+      .services-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .section-head { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .nav-links { display: none; }
+      .hero { padding-top: 4rem; }
+      .hero-stats { grid-template-columns: 1fr; gap: 0.75rem; }
+      .services-grid, .field-grid { grid-template-columns: 1fr; }
+      .visual-inner { padding: 1.4rem; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      section { padding: 4.5rem 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#inicio" aria-label="Barbería Bruma">
+        <span class="brand-mark">B</span>
+        <span>Bruma</span>
+      </a>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="#servicios">Servicios</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#opiniones">Opiniones</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <a class="btn btn-primary nav-cta" href="#contacto">Reservar cita</a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Barbería en Valencia</div>
+          <h1>Corte clásico, estilo actual.</h1>
+          <p class="lead">En Barbería Bruma cuidamos cada detalle: cortes precisos, barba impecable y una experiencia tranquila para que salgas con buen aspecto y mejor sensación.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contacto">Reservar cita</a>
+            <a class="btn btn-outline" href="#servicios">Ver servicios</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <strong>+8 años</strong>
+              <span>Experiencia</span>
+            </div>
+            <div class="stat">
+              <strong>4,9/5</strong>
+              <span>Valoración media</span>
+            </div>
+            <div class="stat">
+              <strong>30 min</strong>
+              <span>Cita ágil</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-card">
+            <div class="visual-inner">
+              <div class="visual-badge">Desde 2018</div>
+              <div class="monogram">BR<span>.</span></div>
+              <div class="visual-note">
+                <strong>La silla de Bruma</strong>
+                <p>Una barbería de barrio con técnica, calma y atención personal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicios" class="dark">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Servicios</div>
+            <h2>Lo esencial, bien hecho.</h2>
+            <p>Servicios claros, precios transparentes y un acabado cuidado. Tanto si buscas un cambio como mantener tu estilo, te asesoramos.</p>
+          </div>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon">01</div>
+            <h3>Corte clásico</h3>
+            <p>Corte a tijera o máquina, adaptado a tu rostro y estilo. Incluye lavado y acabado.</p>
+            <div class="price">Desde <span>18 €</span></div>
+          </article>
+          <article class="service-card">
+            <div class="service-icon">02</div>
+            <h3>Arreglo de barba</h3>
+            <p>Perfilado, rebaje y definición con toalla caliente para una barba limpia y natural.</p>
+            <div class="price">Desde <span>14 €</span></div>
+          </article>
+          <article class="service-card">
+            <div class="service-icon">03</div>
+            <h3>Pack Bruma</h3>
+            <p>Corte + barba en una sola sesión. La opción más elegida para salir impecable.</p>
+            <div class="price">Desde <span>28 €</span></div>
+          </article>
+          <article class="service-card">
+            <div class="service-icon">04</div>
+            <h3>Afeitado tradicional</h3>
+            <p>Afeitado a navaja con preparación, espuma y cuidado final para piel sensible.</p>
+            <div class="price">Desde <span>16 €</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="nosotros">
+      <div class="container about-grid">
+        <div class="about-image" aria-hidden="true">
+          <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="250" cy="250" r="170" stroke="rgba(200,155,99,0.35)" stroke-width="2"/>
+            <circle cx="250" cy="250" r="120" stroke="rgba(244,239,232,0.12)" stroke-width="2"/>
+            <path d="M250 120V380M120 250H380" stroke="rgba(200,155,99,0.22)" stroke-width="2"/>
+            <path d="M165 335L335 165M165 165L335 335" stroke="rgba(244,239,232,0.08)" stroke-width="2"/>
+            <path d="M250 175C290 175 325 210 325 250C325 290 290 325 250 325C210 325 175 290 175 250C175 210 210 175 250 175Z" stroke="rgba(200,155,99,0.55)" stroke-width="3"/>
+            <path d="M220 285L280 215M235 215H280V260" stroke="rgba(244,239,232,0.75)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="about-copy">
+          <div class="eyebrow">Sobre Bruma</div>
+          <h2>Una barbería con carácter propio.</h2>
+          <p>Bruma nació con una idea sencilla: recuperar la barbería de siempre, pero con un ambiente actual y cercano. Aquí no hay prisas ni cortes genéricos.</p>
+          <p>Escuchamos lo que buscas, te recomendamos lo que te favorece y cuidamos el acabado para que el resultado dure más allá de la silla.</p>
+          <ul class="checks">
+            <li>Atención con cita previa y huecos el mismo día.</li>
+            <li>Productos profesionales para cabello y barba.</li>
+            <li>Ambiente cómodo, limpio y sin artificios.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="opiniones" class="dark">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Opiniones</div>
+            <h2>Clientes que repiten.</h2>
+            <p>La mejor prueba es la gente que vuelve. Estas son algunas opiniones de clientes de Bruma.</p>
+          </div>
+        </div>
+        <div class="reviews-grid">
+          <article class="review">
+            <div class="stars">★★★★★</div>
+            <p>“El mejor corte que me han hecho en mucho tiempo. Te escuchan, aconsejan y el resultado queda muy limpio.”</p>
+            <div class="who">Carlos M. · Cliente habitual</div>
+          </article>
+          <article class="review">
+            <div class="stars">★★★★★</div>
+            <p>“Fui por el pack corte y barba y salí encantado. El sitio tiene muy buen ambiente y se nota el detalle.”</p>
+            <div class="who">Javier R. · Valencia</div>
+          </article>
+          <article class="review">
+            <div class="stars">★★★★★</div>
+            <p>“Rápidos, profesionales y cercanos. Reservé por la mañana y pude pasar el mismo día. Repetiré seguro.”</p>
+            <div class="who">Álex T. · Primera visita</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto">
+      <div class="container contact-grid">
+        <div class="contact-panel">
+          <div class="eyebrow">Contacto</div>
+          <h2>Reserva tu próxima cita.</h2>
+          <p>Estamos en el barrio de Ruzafa. Escríbenos o llámanos y te buscamos el mejor hueco.</p>
+          <ul class="contact-list">
+            <li>
+              <span class="label">Dirección</span>
+              <div class="value">Calle de Cádiz 42, Ruzafa<br>46006 Valencia</div>
+            </li>
+            <li>
+              <span class="label">Teléfono y WhatsApp</span>
+              <div class="value"><a href="tel:+34645745919">+34 645 745 919</a></div>
+            </li>
+            <li>
+              <span class="label">Correo</span>
+              <div class="value"><a href="mailto:hugobravodossantos@gmail.com">hugobravodossantos@gmail.com</a></div>
+            </li>
+            <li>
+              <span class="label">Horario</span>
+              <div class="hours">
+                <div><span>Lunes – Viernes</span><span>10:00 – 20:00</span></div>
+                <div><span>Sábado</span><span>10:00 – 14:00</span></div>
+                <div><span>Domingo</span><span>Cerrado</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-panel">
+          <div class="eyebrow">Reserva</div>
+          <h3 style="font-size:2rem; margin-bottom:0.4rem;">Pide tu cita</h3>
+          <p>Déjanos tus datos y te confirmaremos la hora por teléfono o WhatsApp.</p>
+          <form onsubmit="event.preventDefault(); this.querySelector('.form-note').textContent='Gracias. Esta es una web de demostración: en una versión real, este formulario enviaría tu solicitud.'; this.querySelector('.form-note').style.color='#c89b63';">
+            <div class="field-grid">
+              <label>Nombre
+                <input type="text" name="nombre" placeholder="Tu nombre" required>
+              </label>
+              <label>Teléfono
+                <input type="tel" name="telefono" placeholder="600 000 000" required>
+              </label>
+            </div>
+            <div class="field-grid">
+              <label>Servicio
+                <select name="servicio">
+                  <option>Corte clásico</option>
+                  <option>Arreglo de barba</option>
+                  <option>Pack Bruma (corte + barba)</option>
+                  <option>Afeitado tradicional</option>
+                </select>
+              </label>
+              <label>Horario preferido
+                <select name="horario">
+                  <option>Mañana</option>
+                  <option>Mediodía</option>
+                  <option>Tarde</option>
+                </select>
+              </label>
+            </div>
+            <label>Mensaje
+              <textarea name="mensaje" placeholder="Cuéntanos qué día te viene bien o qué estilo buscas."></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit">Solicitar cita</button>
+            <p class="form-note">* Negocio ficticio creado como ejemplo de web para barbería.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2026 Barbería Bruma · Web de ejemplo para negocio ficticio.</div>
+      <div><a href="#inicio">Volver arriba</a></div>
+    </div>
+  </footer>
+</body>
+</html>
